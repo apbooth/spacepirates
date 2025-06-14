@@ -66,14 +66,33 @@ game_state = True
 def ships_status():
     print('You are captain {captain_name}\nYour ships health is {ships_health}%\nYou have {ships_ammo} rounds of ammo\nThe ships shields are at {ships_shields}%\nShips supplies are {ships_supplies}% and morale is {ships_morale}%'.format(captain_name=player_captain_name,ships_health=player_ship_health, ships_ammo=player_ship_ammo, ships_shields=player_ship_shields, ships_supplies=player_ship_supplies, ships_morale=player_ship_morale ))
 
+def battle():
+    damage_to_ship = randint(0, 10)
+    return damage_to_ship
+
+def ship_health(ship):
+    if ship > 0:
+        return True
+
 ships_status()
 
 while game_state == True:
     choose_area = int(input('Please enter which area of space to patrol, {game_areas}: '.format(game_areas=game_areas)))
     print(choose_area)
     if choose_area == 1:
-        print("You head into area 1")
-    elif choose_area == 2:
+        print("You head into area 1\nIt isn't long before your ship's sensors detect another ship approaching...it's a cargo ship\n You order your crew to battle stations..")
+        while ship_health(player_ship_health) and ship_health(first_cargo_ship_health):
+            pirate_attack = battle()
+            first_cargo_ship_health -= pirate_attack
+            if ship_health(first_cargo_ship_health):
+                first_cargo_ship_attack = battle()
+                player_ship_health -= first_cargo_ship_attack
+            ships_status()
+            if player_ship_health <= 0:
+                print("Your ship has been destroyed!!!")
+                game_state = False
+
+    elif choose_area == 2:        
         print("You head into area 2")
     elif choose_area == 3:
         print("You head into area 3")
