@@ -57,5 +57,26 @@ fith_cargo_ship_shields = 50
 fith_cargo_ship_ammo = 50
 fith_cargo_ship_cargo = 100
 
-print('You are captain {captain_name}\nYour ships health is {ships_health}%\nYou have {ships_ammo} rounds of ammo\nThe ships shields are at {ships_shields}%\nShips supplies are {ships_supplies}% and morale is {ships_morale}%'.format(captain_name=player_captain_name,ships_health=player_ship_health, ships_ammo=player_ship_ammo, ships_shields=player_ship_shields, ships_supplies=player_ship_supplies, ships_morale=player_ship_morale ))
+#game areas
+game_areas = [1, 2, 3]
+
+#game state
+game_state = True
+
+def ships_status():
+    print('You are captain {captain_name}\nYour ships health is {ships_health}%\nYou have {ships_ammo} rounds of ammo\nThe ships shields are at {ships_shields}%\nShips supplies are {ships_supplies}% and morale is {ships_morale}%'.format(captain_name=player_captain_name,ships_health=player_ship_health, ships_ammo=player_ship_ammo, ships_shields=player_ship_shields, ships_supplies=player_ship_supplies, ships_morale=player_ship_morale ))
+
+ships_status()
+
+while game_state == True:
+    choose_area = int(input('Please enter which area of space to patrol, {game_areas}: '.format(game_areas=game_areas)))
+    print(choose_area)
+    if choose_area == 1:
+        print("You head into area 1")
+    elif choose_area == 2:
+        print("You head into area 2")
+    elif choose_area == 3:
+        print("You head into area 3")
+    else:
+        print('Invalid choice, please try again')
 
