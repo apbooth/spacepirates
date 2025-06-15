@@ -31,7 +31,8 @@ third_main_enemy_content = 10
 first_cargo_ship_name = "Cargo ship one"
 first_cargo_ship_health = 100
 first_cargo_ship_shields = 50
-first_cargo_ship_ammo = 50
+first_cargo_ship_ammo = {'laser': 50,
+                         'cannon': 5}
 first_cargo_ship_cargo = 100
 
 second_cargo_ship_name = "Cargo ship two"
@@ -68,38 +69,47 @@ def ships_status():
     print('You are captain {captain_name}\nYour ships health is {ships_health}%\nYou have {ships_ammo} rounds of ammo\nThe ships shields are at {ships_shields}%\nShips supplies are {ships_supplies}% and morale is {ships_morale}%'.format(captain_name=player_captain_name,ships_health=player_ship_health, ships_ammo=player_ship_ammo, ships_shields=player_ship_shields, ships_supplies=player_ship_supplies, ships_morale=player_ship_morale ))
 
 
-def battle(ship):
+def battle(ship, choose_area):
     weapon_used = select_weapon(ship)
     min_damage = 0
     max_damage = 0
     if weapon_used != 0:
-        if weapon_used == 1:
+        if weapon_used == 'laser':
             min_damage = 0
             max_damage = 5
-        if weapon_used == 2:
+        if weapon_used == 'cannon':
             min_damage = 5
             max_damage = 10
+        reduce_ammo(ship, weapon_used, choose_area)
         return randint(min_damage, max_damage)
     else:
         return 0
 
-
+def reduce_ammo(ship, weapon_used, choose_area):
+    if ship == 'pirate':
+        player_ship_ammo[weapon_used] -= 1
+        print(player_ship_ammo)
+    if ship == 'cargo':
+        if choose_area == 1:
+            first_cargo_ship_ammo[weapon_used] -= 1
+            print(first_cargo_ship_ammo)
+    
 def select_weapon(ship):
     if ship == 'pirate':
         i = 1
         for weapon, number in player_ship_ammo.items():
             if number > 0:
-                print('To fire {weapon} {number} left, press {i} to fire'.format(number=number, weapon=weapon, i=i))
+                print('To fire {weapon} {number} left, press {weapon} to fire'.format(number=number, weapon=weapon, i=i))
                 i += 1
             else:
                 print('You have no weapons')
                 return 0
-        weapon_choice = int(input("enter weapon choice"))
+        weapon_choice = input("enter weapon choice")
         return weapon_choice
     if ship == 'cargo':
-        if first_cargo_ship_ammo > 0:
-
-            return randint(1, 2)
+        for weapon, number in player_ship_ammo.items():
+                    if number > 0:
+                        print('To fire {weapon} {number} left, press {weapon} to fire'.format(number=number, weapon=weapon, i=i))
         else:
             return 0  
 
@@ -114,17 +124,20 @@ while game_state == True:
     print(choose_area)
     if choose_area == 1:
         print("You head into area 1\nIt isn't long before your ship's sensors detect another ship approaching...it's a cargo ship\n You order your crew to battle stations..")
+        #check player and enemy has health to continue with game
         while ship_health(player_ship_health) and ship_health(first_cargo_ship_health):
-            pirate_attack = battle('pirate')
+            pirate_attack = battle('pirate', choose_area)
             first_cargo_ship_health -= pirate_attack
             print('You have inflicted {damage}% damage to the cargo ship'.format(damage=pirate_attack))
             if ship_health(first_cargo_ship_health):
-                first_cargo_ship_attack = battle('cargo')
+                first_cargo_ship_attack = battle('cargo', choose_area)
                 player_ship_health -= first_cargo_ship_attack
             print('You ship has received {damage}%. You ship is at {health}'.format(damage=first_cargo_ship_attack, health=player_ship_health))
             if player_ship_health <= 0:
-                print("Your ship has been destroyed!!!")
+                print("Game over your ship has been destroyed!!!")
                 game_state = False
+            elif first_cargo_ship_health <= 0:
+                print("You have won!")
 
     elif choose_area == 2:        
         print("You head into area 2")
