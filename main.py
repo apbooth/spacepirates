@@ -31,52 +31,61 @@ game_areas = [1, 2, 3]
 game_state = True
 
 def ships_status():
-    print('You are captain {captain_name}\nYour ships health is {ships_health}%\nYou have {ships_ammo} rounds of ammo\nThe ships shields are at {ships_shields}%\nShips supplies are {ships_supplies}% and morale is {ships_morale}%'.format(captain_name=player_captain_name,ships_health=player_ship_health, ships_ammo=player_ship_ammo, ships_shields=player_ship_shields, ships_loot=player_ship_loot, ships_morale=player_ship_morale ))
+    print('You are captain {captain_name}\nYour ships health is {ships_health}%\nYou have {ships_ammo} rounds of ammo\nThe ships shields are at {ships_shields}%\nShips supplies are {ships_loot}% and morale is {ships_morale}%'.format(captain_name=player_captain_name,ships_health=player_ship_health, ships_ammo=player_ship_ammo, ships_shields=player_ship_shields, ships_loot=player_ship_loot, ships_morale=player_ship_morale ))
 
 
-def battle(ship, choose_area):
+def battle(ship):
     weapon_used = select_weapon(ship)
     min_damage = 0
     max_damage = 0
     if weapon_used != 0:
-        if weapon_used == 'laser':
+        if weapon_used == 1:
             min_damage = 0
             max_damage = 5
-        if weapon_used == 'cannon':
+        if weapon_used == 2:
             min_damage = 5
             max_damage = 10
-        reduce_ammo(ship, weapon_used, choose_area)
+        reduce_ammo(ship, weapon_used)
         return randint(min_damage, max_damage)
     else:
         return 0
 
-def reduce_ammo(ship, weapon_used, choose_area):
+def reduce_ammo(ship, weapon_used):
     if ship == 'pirate':
-        player_ship_ammo[weapon_used] -= 1
-        print(player_ship_ammo)
+        if weapon_used  == 1:
+            player_ship_ammo['laser'] -= 1
+        if weapon_used == 2:
+            player_ship_ammo['cannon'] -= 1
     if ship == 'cargo':
-        if choose_area == 1:
-            cargo_ship_ammo[weapon_used] -= 1
-            print(cargo_ship_ammo)
-    
+        if weapon_used  == 1:
+            cargo_ship_ammo['laser'] -= 1
+        if weapon_used == 2:
+            cargo_ship_ammo['cannon'] -= 1
+
+
 def select_weapon(ship):
     if ship == 'pirate':
         i = 1
         for weapon, number in player_ship_ammo.items():
             if number > 0:
-                print('To fire {weapon} {number} left, press {weapon} to fire'.format(number=number, weapon=weapon, i=i))
+                print('To fire {weapon} {number} shots left, press {i} to fire'.format(number=number, weapon=weapon, i=i))
                 i += 1
             else:
                 print('You have no weapons')
                 return 0
-        weapon_choice = input("enter weapon choice")
+        weapon_choice = int(input("enter weapon choice: "))
+        while weapon_choice > i:
+            weapon_choice = int(input("enter weapon choice: "))
         return weapon_choice
+        
     if ship == 'cargo':
+        i = 0
         for weapon, number in player_ship_ammo.items():
                     if number > 0:
-                        print('To fire {weapon} {number} left, press {weapon} to fire'.format(number=number, weapon=weapon, i=i))
-        else:
-            return 0  
+                        i += 1
+                    else:
+                        return 0 
+        return randint(0, i) 
 
 def ship_health(ship):
     if ship > 0:
@@ -90,24 +99,28 @@ while game_state == True:
     if choose_area == 1:
         print("You head into area 1\nIt isn't long before your ship's sensors detect another ship approaching...it's a cargo ship\n You order your crew to battle stations..")
         #check player and enemy has health to continue with game
-        while ship_health(player_ship_health) and ship_health(first_cargo_ship_health):
-            pirate_attack = battle('pirate', choose_area)
-            first_cargo_ship_health -= pirate_attack
-            print('You have inflicted {damage}% damage to the cargo ship'.format(damage=pirate_attack))
-            if ship_health(first_cargo_ship_health):
-                first_cargo_ship_attack = battle('cargo', choose_area)
-                player_ship_health -= first_cargo_ship_attack
-            print('You ship has received {damage}%. You ship is at {health}'.format(damage=first_cargo_ship_attack, health=player_ship_health))
-            if player_ship_health <= 0:
-                print("Game over your ship has been destroyed!!!")
-                game_state = False
-            elif first_cargo_ship_health <= 0:
-                print("You have won!")
+        while ship_health(player_ship_health) and ship_health(cargo_ship_health):
 
-    elif choose_area == 2:        
-        print("You head into area 2")
-    elif choose_area == 3:
-        print("You head into area 3")
-    else:
-        print('Invalid choice, please try again')
+            if player_ship_ammo['laser'] > 0 or player_ship_ammo['cannon'] > 0:
+                print('You have ammo')
+                player_attack = battle('pirate')
+                # cargo_ship_health -= player_attack
+                # print('You have inflicted {damage}% damage to the cargo ship'.format(damage=player_attack))
+            else:
+                print("You've run out of Ammo")
+                game_state = False
+
+            # if ship_health(cargo_ship_health):
+            #     cargo_ship_attack = battle('cargo')
+            #     player_ship_health -= cargo_ship_attack
+            # print('You ship has received {damage}% damage. You ship is at {health}%'.format(damage=cargo_ship_attack, health=player_ship_health))
+
+
+    #check if any ship has been destroyed and announce winner
+    if player_ship_health <= 0:
+        print("Game over your ship has been destroyed!!!")
+        game_state = False
+    elif cargo_ship_health <= 0:
+        print("You have won!, enemyship has {health}".format(health=cargo_ship_health))
+        game_state = False
 
