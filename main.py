@@ -89,15 +89,24 @@ def ship_health(ship):
     if ship > 0:
         return True
 
+def cargo_ship_surrender():
+    #create random choice for cargo ship to surrender
+    number = randint(0, 2)
+    if cargo_ship_health < 20 and number == 0:
+        return True
+    return False
+
+
 ships_status()
 
+surrender = False
 while game_state == True:
     choose_area = int(input('Please enter which area of space to patrol, {game_areas}: '.format(game_areas=game_areas)))
     print(choose_area)
     if choose_area == 1:
         print("You head into area 1\nIt isn't long before your ship's sensors detect another ship approaching...it's a cargo ship\n You order your crew to battle stations..")
         #check player and enemy has health to continue with game
-        while ship_health(player_ship_health) and ship_health(cargo_ship_health):
+        while ship_health(player_ship_health) and ship_health(cargo_ship_health) and not surrender:
 
             if player_ship_ammo['laser'] > 0 or player_ship_ammo['cannon'] > 0:
                 weapon_used = select_weapon("pirate")
@@ -108,18 +117,21 @@ while game_state == True:
             else:
                 print("You've run out of Ammo")
                 game_state = False
-
-            if ship_health(cargo_ship_health):
-                cargo_ship_attack = battle('cargo')
-                player_ship_health -= cargo_ship_attack
-            print('You ship has received {damage}% damage. You ship is at {health}%'.format(damage=cargo_ship_attack, health=player_ship_health))
-
-
+            
+            if not cargo_ship_surrender():
+                if ship_health(cargo_ship_health):
+                    cargo_ship_attack = battle('cargo')
+                    player_ship_health -= cargo_ship_attack
+                    print('You ship has received {damage}% damage. You ship is at {health}%'.format(damage=cargo_ship_attack, health=player_ship_health))
+            else:
+                surrender = True
+                print("Captain incoming radio message\nCargo ship is surrendering..")
+                game_state = False
     #check if any ship has been destroyed and announce winner
     if player_ship_health <= 0:
         print("Game over your ship has been destroyed!!!")
         game_state = False
     elif cargo_ship_health <= 0:
-        print("You have won!, enemyship has {health}".format(health=cargo_ship_health))
+        print("You have won!, enemyship has been destroyed")
         game_state = False
 
