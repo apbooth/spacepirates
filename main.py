@@ -97,6 +97,14 @@ def cargo_ship_surrender():
     return False
 
 
+def looting(cargo, player):
+    print(cargo_ship_content)
+    print("Captian, we have boarded the cargo ship and found {amount}!, Transfering to our ship..".format(amount=cargo))
+    player += cargo
+    cargo = 0    
+    print("We now have {total_amount} in loot, captain".format(total_amount=player))
+
+
 ships_status()
 
 surrender = False
@@ -125,7 +133,8 @@ while game_state == True:
                     print('You ship has received {damage}% damage. You ship is at {health}%'.format(damage=cargo_ship_attack, health=player_ship_health))
             else:
                 surrender = True
-                print("Captain incoming radio message\nCargo ship is surrendering..")
+                print("Captain incoming radio message...\nCargo ship is surrendering.\nPreparing to board the cargo ship.")
+                looting(cargo_ship_content, player_ship_loot)
                 game_state = False
     #check if any ship has been destroyed and announce winner
     if player_ship_health <= 0:
