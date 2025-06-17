@@ -35,7 +35,6 @@ def ships_status():
 
 
 def battle(ship):
-    weapon_used = select_weapon(ship)
     min_damage = 0
     max_damage = 0
     if weapon_used != 0:
@@ -45,7 +44,6 @@ def battle(ship):
         if weapon_used == 2:
             min_damage = 5
             max_damage = 10
-        reduce_ammo(ship, weapon_used)
         return randint(min_damage, max_damage)
     else:
         return 0
@@ -70,9 +68,9 @@ def select_weapon(ship):
             if number > 0:
                 print('To fire {weapon} {number} shots left, press {i} to fire'.format(number=number, weapon=weapon, i=i))
                 i += 1
-            else:
-                print('You have no weapons')
-                return 0
+            # else:
+            #     print('You have no weapons')
+            #     return 0
         weapon_choice = int(input("enter weapon choice: "))
         while weapon_choice > i:
             weapon_choice = int(input("enter weapon choice: "))
@@ -102,18 +100,19 @@ while game_state == True:
         while ship_health(player_ship_health) and ship_health(cargo_ship_health):
 
             if player_ship_ammo['laser'] > 0 or player_ship_ammo['cannon'] > 0:
-                print('You have ammo')
+                weapon_used = select_weapon("pirate")
                 player_attack = battle('pirate')
-                # cargo_ship_health -= player_attack
-                # print('You have inflicted {damage}% damage to the cargo ship'.format(damage=player_attack))
+                reduce_ammo("pirate", weapon_used)
+                cargo_ship_health -= player_attack
+                print('You have inflicted {damage}% damage to the cargo ship'.format(damage=player_attack))
             else:
                 print("You've run out of Ammo")
                 game_state = False
 
-            # if ship_health(cargo_ship_health):
-            #     cargo_ship_attack = battle('cargo')
-            #     player_ship_health -= cargo_ship_attack
-            # print('You ship has received {damage}% damage. You ship is at {health}%'.format(damage=cargo_ship_attack, health=player_ship_health))
+            if ship_health(cargo_ship_health):
+                cargo_ship_attack = battle('cargo')
+                player_ship_health -= cargo_ship_attack
+            print('You ship has received {damage}% damage. You ship is at {health}%'.format(damage=cargo_ship_attack, health=player_ship_health))
 
 
     #check if any ship has been destroyed and announce winner
