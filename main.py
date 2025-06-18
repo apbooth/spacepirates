@@ -68,10 +68,10 @@ def reduce_ammo(ship, weapon_used):
 
 def select_weapon(ship):
     if ship == 'pirate':
-        i = 1
+        i = 0
         for weapon, number in player_ship_ammo.items():
             if number > 0:
-                print('Press {i} to fire {weapon} {number} shots left..\n'.format(number=number, weapon=weapon, i=i))
+                print('Press {i} to fire {weapon} {number} shots left..\n'.format(number=number, weapon=weapon, i=i+1))
                 i += 1
             # else:
             #     print('You have no weapons')
@@ -128,6 +128,7 @@ ships_status()
 
 surrender = False
 player_surrender = False
+level_1a_complete = False
 
 while game_state == True:
     choose_area = int(input('Please enter which area of space to patrol, {game_areas}: '.format(game_areas=game_areas)))
@@ -136,7 +137,7 @@ while game_state == True:
         print("..Navigator: Now entering zone one, Captain..\n")
         print("..Tatical Officer: Captain, sensors have detected a ship approaching...\nit's a cargo ship..\n")
         #check player and enemy has health and not surrendered to continue with game
-        while ship_health(player_ship_health) and ship_health(cargo_ship_health) and not surrender:
+        while ship_health(player_ship_health) and ship_health(cargo_ship_health) and not level_1a_complete:
 
             if player_ship_ammo['laser'] > 0 or player_ship_ammo['cannon'] > 0:
                 weapon_used = select_weapon("pirate")
@@ -161,11 +162,13 @@ while game_state == True:
                 surrender = True
                 print("...Comunications officer: Captain incoming radio message...\nCargo ship is surrendering..\nPreparing to board the cargo ship...")
                 looting(cargo_ship_content, player_ship_loot)
-                # game_state = False
+                level_1a_complete = True
 
-        #now military ship comes in
-        print("...Tatical Officer: Captain, Galaxon milatry ship detected...\nApproachig fast...")
-        # while ship_health(player_ship_health) and ship_health(galaxon_ship_health) and not player_surrender:
+        if level_1a_complete:
+            ships_status()
+            #now military ship comes in
+            print("...Tatical Officer: Captain, Galaxon milatry ship detected...\nApproachig fast...")
+            # while ship_health(player_ship_health) and ship_health(galaxon_ship_health) and not player_surrender:
             
             
 
