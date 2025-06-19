@@ -77,13 +77,7 @@ def select_weapon(ship):
                     if number > 0:
                         i += 1 
         return randint(0, i) 
-    
-    if ship == 'galaxon':
-        i = 0
-        for weapon, number in galaxon_ship_ammo.items():
-                    if number > 0:
-                        i += 1 
-        return randint(0, i) 
+
 
 def ship_health(ship):
     if ship > 0:
@@ -107,8 +101,8 @@ def player_surrender():
         if reply == 2:
             return False
 
-def looting(cargo, player):
-    print("\n...Crew: Captian, we have boarded the cargo ship and found {amount} space coins, Transfering to our ship...\n".format(amount=cargo))
+def looting(cargo, player):    
+    print("\n...Crew: Captain, we have boarded the cargo ship and found {amount} space coins, Transfering to our ship...\n".format(amount=cargo))
     player += cargo
     cargo = 0    
     print("\n...We now have {total_amount} space coins in the ships loot, captain...\n".format(total_amount=player))
@@ -116,17 +110,15 @@ def looting(cargo, player):
 
 ships_status()
 
-surrender = False
+cargo_surrender = False
 player_surrender = False
-level_1a_complete = False
 
 while game_state == True:
     
     print("..Navigator: Now entering zone one, Captain..\n")
     print("..Tatical Officer: Captain, sensors have detected a ship approaching...\nit's a cargo ship..\n")
-    #check player and enemy has health and not surrendered to continue with game
-    # while ship_health(player_ship_health) and ship_health(cargo_ship_health) and not level_1a_complete:
-    while ship_health(player_ship_health) and not level_1a_complete:
+
+    while ship_health(player_ship_health) and not player_surrender and not cargo_surrender:
 
         if player_ship_ammo['laser'] > 0 or player_ship_ammo['cannon'] > 0:
             weapon_used = select_weapon("pirate")
@@ -135,11 +127,11 @@ while game_state == True:
             cargo_ship_health -= player_attack
             print("\nWeapons operator: We have inflicted {damage}% damage to the cargo ship, Captain..\n".format(damage=player_attack))
         else:
-            print("weapons operator: Captian, we have run out of Ammunition..\n")
+            print("weapons operator: Captain, we have run out of Ammunition..\n")
+            player_surrender = True
             game_state = False
         
-        if not cargo_ship_surrender():
-            print("NO SURRENDER!!")
+        if not cargo_ship_surrender() and not player_surrender:
             if ship_health(cargo_ship_health):
                 weapon_used = select_weapon('cargo')
                 print(weapon_used)
@@ -150,21 +142,24 @@ while game_state == True:
                 print("Tatical officer: We have received {damage}% damage. You ship is at {health}%..\n".format(damage=cargo_ship_attack, health=player_ship_health))
             else:
                 print("...Tatical officer: Captain the cargo ship has been destroyed, no loot this time...")
-                level_1a_complete = True
                 game_state = False
         
         else:
-            surrender = True
+            cargo_surrender = True
             print("...Comunications officer: Captain incoming radio message...\nCargo ship is surrendering..\nPreparing to board the cargo ship...")
             looting(cargo_ship_content, player_ship_loot)
-            level_1a_complete = True
             game_state = False
 
         
-    #check if any ship has been destroyed and announce winner
+    #check if player ship has been destroyed
     if player_ship_health <= 0:
         print("Game over your ship has been destroyed!!!")
         game_state = False
+    elif cargo_surrender:
+        print("Congratulations you got the loot and have won the game")
+    elif player_surrender:
+        print("Game over, You had to surrender and now languish in space jail")
+
 print("Game over")
 
 
