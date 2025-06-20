@@ -102,10 +102,10 @@ def player_surrender():
             return False
 
 def looting(cargo, player):    
-    print("\n...Crew: Captain, we have boarded the cargo ship and found {amount} space coins, Transfering to our ship...\n".format(amount=cargo))
+    print("\n...Crew: Captain, we have boarded the cargo ship and found {amount} space coins, Transfering to our ship..".format(amount=cargo))
     player += cargo
     cargo = 0    
-    print("\n...We now have {total_amount} space coins in the ships loot, captain...\n".format(total_amount=player))
+    print("We now have {total_amount} space coins in the ships loot, captain...\n".format(total_amount=player))
 
 
 ships_status()
@@ -134,7 +134,6 @@ while game_state == True:
         if not cargo_ship_surrender() and not player_surrender:
             if ship_health(cargo_ship_health):
                 weapon_used = select_weapon('cargo')
-                print(weapon_used)
                 cargo_ship_attack = battle('cargo')
                 reduce_ammo("cargo", weapon_used)
                 player_ship_health -= cargo_ship_attack
@@ -146,7 +145,7 @@ while game_state == True:
         
         else:
             cargo_surrender = True
-            print("...Comunications officer: Captain incoming radio message...\nCargo ship is surrendering..\nPreparing to board the cargo ship...")
+            print("...Comunications officer: Captain incoming radio message...\nCargo ship is surrendering..\nPreparing to board the cargo ship...\n")
             looting(cargo_ship_content, player_ship_loot)
             game_state = False
 
