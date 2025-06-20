@@ -58,7 +58,7 @@ class pirate_ship():
             while reply != 1 or reply != 2:
                 reply = int(input("To surrender press 1 to fight on press 2"))
             if reply == 1:
-                self.ship_surrender = True
+                return True
  
 
     def looting(self, cargo, player):    
@@ -111,7 +111,7 @@ class cago_ship():
     #create random choice for cargo ship to surrender
         number = randint(0, 2)
         if self.ship_health < 20 and number == 0:
-            self.ship_surrender = True
+            return True
     
 
 #game state to end the game when False
@@ -139,23 +139,25 @@ while game_state == True:
             game_state = False
             break
         
-        # if not cargo_ship_one.ship_surrender and not player.ship_surrender:
-        #     if cargo_ship_one.ship_health:
-        #         weapon_used = cargo_ship_one.select_weapon
-        #         attack = cargo_ship_one.attack(weapon_used)
-        #         cargo_ship_one.reduce_ammo(weapon_used)
-        #         player.ship_health -= attack
-        #         print("Tatical officer: Incoming fire..\n")
-        #         print("Tatical officer: We have received {damage}% damage. You ship is at {health}%..\n".format(damage=attack, health=player.ship_health))
-        #     else:
-        #         print("...Tatical officer: Captain the cargo ship has been destroyed, no loot this time...")
-        #         game_state = False
+        if not cargo_ship_one.cargo_surrender() and not player.player_surrender():
+            if cargo_ship_one.health:
+                weapon_used = cargo_ship_one.select_weapon()
+                attack = cargo_ship_one.attack(weapon_used)
+                cargo_ship_one.reduce_ammo(weapon_used)
+                player.ship_health -= attack
+                print("Tatical officer: Incoming fire..\n")
+                print("Tatical officer: We have received {damage}% damage. You ship is at {health}%..\n".format(damage=attack, health=player.ship_health))
+            else:
+                print("...Tatical officer: Captain the cargo ship has been destroyed, no loot this time...")
+                game_state = False
+                break
         
-        # else:
-        #     ship_surrender = True
-        #     print("...Comunications officer: Captain incoming radio message...\nCargo ship is surrendering..\nPreparing to board the cargo ship...\n")
-        #     player.looting(cargo_ship_one.ship_content, player.ship_loot)
-        #     game_state = False
+        else:
+            ship_surrender = True
+            print("...Comunications officer: Captain incoming radio message...\nCargo ship is surrendering..\nPreparing to board the cargo ship...\n")
+            player.looting(cargo_ship_one.ship_content, player.ship_loot)
+            game_state = False
+            break
 
         
     #check if player ship has been destroyed
