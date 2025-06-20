@@ -15,10 +15,11 @@ class pirate_ship():
         print('You are captain {captain_name}\nYour ships health is {ships_health}%\nYou have {ships_ammo} rounds of ammo\nThe ships shields are at {ships_shields}%\nShips supplies are {ships_loot}% and morale is {ships_morale}%'.format(captain_name=self.captain_name,ships_health=self.ship_health, ships_ammo=self.ship_ammo, ships_loot=self.ship_loot))
 
     def select_weapon(self):
+        print("boo")
         i = 0
         for weapon, number in self.ship_ammo.items():
             if number > 0:
-                print('Press {i} to fire {weapon} {number} shots left..\n'.format(number=self.number, weapon=self.weapon, i=i+1))
+                print('Press {i} to fire {weapon} {number} shots left..\n'.format(number=number, weapon=weapon, i=i+1))
                 i += 1
         weapon_choice = int(input("\nenter weapon choice: "))
         while weapon_choice > i:
@@ -126,17 +127,17 @@ while game_state == True:
     print("..Tatical Officer: Captain, sensors have detected a ship approaching...\nit's a cargo ship..\n")
 
     while player.health and player.health and cargo_ship_one.health:
-        print(player.ship_ammo['cannon'])
         if player.ship_ammo['laser'] > 0 or player.ship_ammo['cannon'] > 0:
-            weapon_used = player.select_weapon
-        #     player_attack = player.attack(weapon_used)
-        #     player.reduce_ammo(weapon_used)
-        #     cargo_ship_one.ship_health -= player_attack
-        #     print("\nWeapons operator: We have inflicted {damage}% damage to the cargo ship, Captain..\n".format(damage=player_attack))
-        # else:
-        #     print("weapons operator: Captain, we have run out of Ammunition..\n")
-        #     player_surrender = True
-        #     game_state = False
+            weapon_used = player.select_weapon()
+            player_attack = player.attack(weapon_used)
+            player.reduce_ammo(weapon_used)
+            cargo_ship_one.ship_health -= player_attack
+            print("\nWeapons operator: We have inflicted {damage}% damage to the cargo ship, Captain..\n".format(damage=player_attack))
+        else:
+            print("weapons operator: Captain, we have run out of Ammunition..\n")
+            player.ship_surrender = True
+            game_state = False
+            break
         
         # if not cargo_ship_one.ship_surrender and not player.ship_surrender:
         #     if cargo_ship_one.ship_health:
