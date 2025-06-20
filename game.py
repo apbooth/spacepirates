@@ -1,14 +1,14 @@
 from random import randint
 
 #set up player and enemy ships vars
+class pirate_ship():
+    player_captain_name = "Zolt"
+    player_ship_health = 100
 
-player_captain_name = "Zolt"
-player_ship_health = 100
-player_ship_ammo = {'laser': 25,
-                    'cannon': 5 }
-player_ship_shields = False
-player_ship_loot = 25
-player_ship_morale = randint(75, 100)
+    def __init__(self):
+        self.player_ship_ammo = {'laser': 25,
+                            'cannon': 5 }
+        self.player_ship_loot = 25
 
 
 cargo_ship_health = 100
